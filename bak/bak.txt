@@ -1,0 +1,33 @@
+DigitalOut led1(LED3);          
+DigitalOut led2(LED4);          
+DigitalOut led3(LED6);          
+DigitalOut led4(LED5); 
+
+/**
+ *  LED3        = PD_13, // orange
+ *  LED4        = PD_12, // green
+ *  LED5        = PD_14, // red
+ *  LED6        = PD_15, // blue
+ * 
+ * */
+
+
+ void flip()
+{
+     SITUP sitUp(&acc);
+     sitUp.start(&logger);
+
+}
+
+
+  // Attach the address of the interrupt handler routine for pushbutton
+  // ledControl.blinkALL(10);
+  // ledControl.blinkCircle(10);
+  acc.ReadData(&X, &Y, &Z); 
+  angle = filter.filterAngle(X, Y, Z);
+  logger.printf("angle: %.2f", angle);
+  ledControl.toggleOneLed(10, SITUPS);
+
+
+
+  Serial logger(PA_2, PA_3, 9600);   // use serial as a logger
