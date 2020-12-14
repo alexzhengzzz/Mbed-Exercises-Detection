@@ -8,7 +8,7 @@ int main() {
     {
       case SITUPS:
         portD = 1U<<12; // green
-        situp_routine(MAX_COUNT);
+        detect(&sp, 5, SITUPS, 1.0, 12);
         break;
       case PUSHUPS:
         portD = 1U<<13; //orange

@@ -6,7 +6,7 @@
 #include "LEDBLINK.h"
 #include "USBSerial.h"
 #include "FILTER.h"
-
+#include "SITUP.h"
 
 #define LED_LIGHT_MASK 0x0000F000
 #define LED_SHUTDOWN_MASK 0x00000000
@@ -22,9 +22,13 @@ typedef enum {
   SQUATS
 } WORKOUT;
 
+/**** Variables ****/
+int16_t X, Y, Z; 
+float angle, pitch, filter_angle;
+volatile bool resetFlag = false;
+volatile int switchExercise = 0;
 
 /**** init objects ****/
-FILTER filter;
 LEDBLINK ledControl;
 USBSerial logger;
 Timer debounce;
@@ -32,13 +36,10 @@ Ticker ticker;
 LIS3DSH acc(PA_7, PA_6, PA_5, PE_3); // accelerometer
 PortOut portD(PortD); // 13 12 14 15  PD 0~15  
 InterruptIn button(BUTTON1);
+FILTER filter;
 
 
-/**** Variables ****/
-int16_t X, Y, Z; 
-float angle, pitch, filter_angle;
-volatile bool resetFlag = false;
-volatile int switchExercise = 0;
+SITUP sp(&logger, &ledControl, &portD, &X, &Y, &Z, &angle, &switchExercise);
 
 
 /**** button Interrupt routine - is interrupt activated by a falling edge of button input ****/
@@ -55,48 +56,39 @@ void getACCData()
 {
   acc.ReadData(&X, &Y, &Z);
   acc.ReadAngles(&angle, &pitch); 
-  filter_angle = filter.filterAngle(Z);
+  angle = filter.filterAngle(Z);
 }
 
 
 /**** Prepare Before Loop  ****/
 void prepareBeforeLoop() {
-  ledControl.blinkCircle(1); 
+  // ledControl.blinkCircle(1); 
   debounce.start();
   button.fall(&changeExercise);
   ticker.attach(&getACCData, 0.1); //10hz
 }
 
+void detect(EXEC* exec, int max_count, WORKOUT curExec, float delay, int port) {
+  exec->count = 0;
+  int exeNum = curExec;
+  logger.printf("%d %d -------", *(exec->sw), exeNum);
+  while (exec->count < max_count && *(exec->sw) == exeNum) {
+    exec->detect();
 
-/**** situp routine  ****/
-void situp_routine(int maxCount) {
-  // 1. init value
-  int count = 0;
-  float last_angle = MAX_DEGREE; 
-
-  // 2. detect sit up
-  while (count < maxCount && switchExercise == SITUPS) {
-    logger.printf("angle: %f count: %d \n",filter_angle, count);
-    // detect
-    if (last_angle < 19 && filter_angle > 44) {
-      count = count +1;
-      portD = 0U<<12; // each situp indication
-    }
-    // record previos angle
-    last_angle = filter_angle;  
-    wait(1.0);
-    if(switchExercise != SITUPS) {
+    wait(delay);
+    if(switchExercise != curExec) {
       break; 
     }
-    wait(1.0);
-    portD = 1U<<12; 
+    wait(delay);
+    portD = 1U<<port; // green
   }
   
-  // 3. finish indication
-  if (count == MAX_COUNT) {
-    ledControl.blinkALL(2);
-    ledControl.blinkCircle(2);
+  if (exec->count == max_count) {
+    exec->finish();
   }
 }
+
+
+
 
 #endif
