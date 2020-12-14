@@ -7,6 +7,7 @@
 #define LED_LIGHT_MASK 0x0000F000
 #define LED_SHUTDOWN_MASK 0x00000000
 #define MAX_COUNT 5
+#define MAX_DEGREE 5
 
 FILTER filter;
 LIS3DSH acc(PA_7, PA_6, PA_5, PE_3); // accelerometer
@@ -55,19 +56,28 @@ void prepareBeforeLoop() {
 }
 
 /**** situp routine  ****/
-void situp_routine(int max) {
+void situp_routine(int maxCount) {
+  // 1. init value
   int count = 0;
-  float last_angle = 180; 
-  while (count < max && switchExercise == SITUPS) {
+  float last_angle = MAX_DEGREE; 
+  // 2. detect situp
+  while (count < maxCount && switchExercise == SITUPS) {
     logger.printf("angle: %f count: %d \n",filter_angle, count);
+    // success situp
     if (last_angle < 19 && filter_angle > 44) {
       count = count +1;
-      portD = 0U<<12; // green
+      portD = 0U<<12; // each situp indication
     }
-    last_angle = filter_angle;
-    wait(2.0);
-    portD = 1U<<12; // green
+    // record previos angle
+    last_angle = filter_angle;  
+    wait(1.0);
+    if(switchExercise != SITUPS) {
+      break; 
+    }
+    wait(1.0);
+    portD = 1U<<12; 
   }
+  // 3. finish indication
   if (count == MAX_COUNT) {
     ledControl.blinkALL(2);
     ledControl.blinkCircle(2);
