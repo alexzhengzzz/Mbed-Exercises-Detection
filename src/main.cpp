@@ -1,8 +1,3 @@
-#include <mbed.h>
-#include "LIS3DSH.h"
-#include "LEDBLINK.h"
-#include "USBSerial.h"
-#include "FILTER.h"
 #include "main.h"
 
 int main() {

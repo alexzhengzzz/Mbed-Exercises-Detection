@@ -1,5 +1,4 @@
 #include "LEDBLINK.h"
-#include "mbed.h"
 #define LED_LIGHT_MASK 0x0000F000 // set all led to 1
 #define LED_SHUTDOWN_MASK 0x00000000 // set all led to 0
 int PIN_BASE = 12; 

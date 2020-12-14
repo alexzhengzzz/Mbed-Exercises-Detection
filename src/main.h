@@ -6,7 +6,6 @@
 #include "LEDBLINK.h"
 #include "USBSerial.h"
 #include "FILTER.h"
-#include "main.h"
 
 
 #define LED_LIGHT_MASK 0x0000F000

@@ -1,9 +1,8 @@
 #ifndef FILTER_H
 #define FILTER_H
-#include "mbed.h"
 /**** Filter Parameters  ****/
 const float PI = 3.1415926;
-const uint8_t N = 20;
+const uint8_t N = 10;
  
 class FILTER {
   public:
