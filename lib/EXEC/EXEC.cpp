@@ -1,9 +1,8 @@
 #include "EXEC.h"
 
-EXEC::EXEC(USBSerial* logger, LEDBLINK* ledControl, PortOut* portD, int16_t* X, int16_t* Y, int16_t* Z, float* angle, volatile int* switchExercise) {
-    log = logger;
-    led = ledControl;
-    pd = portD;
+EXEC::EXEC(int16_t* X, int16_t* Y, int16_t* Z, float* angle, volatile int* switchExercise) {
+    led = new LEDBLINK();
+    pd = new PortOut(PortD);
     count = 0;
     x = X;
     y = Y;
@@ -12,6 +11,21 @@ EXEC::EXEC(USBSerial* logger, LEDBLINK* ledControl, PortOut* portD, int16_t* X, 
     sw = switchExercise;
 }
 
+void EXEC::setLogger(USBSerial* logger) {
+    log = logger;
+}
+
+void EXEC::indicate(int port, float time) {
+    float sum = 0;
+    while (sum < time) {
+        *pd = 0U << port;
+        wait(.1);
+        *pd = 1U << port;
+        wait(.1);
+        sum = sum + 0.2; 
+    }
+    *pd = 0U << port; // reset
+}
 
 void EXEC::finish() {
     led->blinkALL(2);

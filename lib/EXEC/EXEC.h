@@ -8,11 +8,13 @@
 
 class EXEC {
   public:
-    EXEC(USBSerial* logger, LEDBLINK* ledControl,  PortOut* portD, int16_t* X, int16_t* Y, int16_t* Z, float* angle, volatile int* switchExercise);
-    virtual void detect(){}
+    EXEC(int16_t* X, int16_t* Y, int16_t* Z, float* angle, volatile int* switchExercise);
+    virtual void detect(){};
+    virtual void reset(){};
+    void setLogger(USBSerial* logger);
+    void indicate(int port, float time); 
     void finish();
 
-    // FILTER* filter;
     USBSerial* log;
     LEDBLINK* led;
     PortOut* pd;

@@ -39,7 +39,7 @@ InterruptIn button(BUTTON1);
 FILTER filter;
 
 
-SITUP sp(&logger, &ledControl, &portD, &X, &Y, &Z, &angle, &switchExercise);
+SITUP sp(&X, &Y, &Z, &angle, &switchExercise);
 
 
 /**** button Interrupt routine - is interrupt activated by a falling edge of button input ****/
@@ -66,17 +66,18 @@ void prepareBeforeLoop() {
   debounce.start();
   button.fall(&changeExercise);
   ticker.attach(&getACCData, 0.1); //10hz
+  sp.setLogger(&logger);
 }
 
 void detect(EXEC* exec, int max_count, WORKOUT curExec, float delay, int port) {
+  // exec->indicate(12, .5);
   exec->count = 0;
-  int exeNum = curExec;
-  logger.printf("%d %d -------", *(exec->sw), exeNum);
-  while (exec->count < max_count && *(exec->sw) == exeNum) {
+  while (exec->count < max_count && switchExercise == curExec) {
     exec->detect();
 
     wait(delay);
     if(switchExercise != curExec) {
+      exec->reset();
       break; 
     }
     wait(delay);
@@ -84,6 +85,7 @@ void detect(EXEC* exec, int max_count, WORKOUT curExec, float delay, int port) {
   }
   
   if (exec->count == max_count) {
+    exec->reset();
     exec->finish();
   }
 }
