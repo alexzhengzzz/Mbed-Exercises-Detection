@@ -3,12 +3,13 @@
 EXEC::EXEC(int16_t* X, int16_t* Y, int16_t* Z, float* angle, volatile int* switchExercise) {
     led = new LEDBLINK();
     pd = new PortOut(PortD);
-    count = 0;
     x = X;
     y = Y;
     z = Z;
     ag = angle;
     sw = switchExercise;
+    state_count = 0;
+    total_count = 0;
 }
 
 void EXEC::setLogger(USBSerial* logger) {
@@ -30,6 +31,11 @@ void EXEC::indicate(int port, float time) {
 void EXEC::finish() {
     led->blinkALL(2);
     led->blinkCircle(2);
+}
+
+void EXEC::reset() {
+  state_count = 0;
+  total_count = 0;
 }
 
 

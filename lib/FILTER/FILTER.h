@@ -2,7 +2,7 @@
 #define FILTER_H
 /**** Filter Parameters  ****/
 const float PI = 3.1415926;
-const uint8_t N = 10;
+const uint8_t N = 5;
  
 class FILTER {
   public:

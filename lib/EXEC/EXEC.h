@@ -10,10 +10,10 @@ class EXEC {
   public:
     EXEC(int16_t* X, int16_t* Y, int16_t* Z, float* angle, volatile int* switchExercise);
     virtual void detect(){};
-    virtual void reset(){};
     void setLogger(USBSerial* logger);
     void indicate(int port, float time); 
     void finish();
+    void reset();
 
     USBSerial* log;
     LEDBLINK* led;
@@ -24,7 +24,8 @@ class EXEC {
     int16_t* z;
 
     float* ag;
-    int count;
+    int state_count;
+    int total_count;
     volatile int* sw;
 
     /**** define 4 kinds of exercises state ****/
