@@ -5,6 +5,7 @@
 FILTER::FILTER() {
 }
 
+
 float FILTER::filterAngle(int16_t zAccel) {
         /* normalise to 1g */
 		g_z = (float)zAccel/17694.0;
@@ -35,8 +36,5 @@ float FILTER::filterAngle(int16_t zAccel) {
 		}
 
 		/********** END of filtering **********************/
-		
-		/* compute angle in degrees */
 		return 180*acos(g_z_filt)/PI;
-
 }

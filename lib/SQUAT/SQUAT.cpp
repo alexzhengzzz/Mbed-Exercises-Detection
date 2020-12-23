@@ -11,7 +11,7 @@ void SQUAT::detect() {
       if (*z < 1420) {
         state_count++;
         s = squating;
-        *pd = 1U<<15; // green
+        *pd = 0U<<15; // green
       }
       break;
     case squating:

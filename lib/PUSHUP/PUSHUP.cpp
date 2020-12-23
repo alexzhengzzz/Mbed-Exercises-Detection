@@ -1,5 +1,5 @@
 #include "PUSHUP.h"
-
+#include <math.h> 
 PUSHUP::PUSHUP(int16_t* X, int16_t* Y, int16_t* Z, float* angle, volatile int* switchExercise):EXEC(X, Y, Z, angle, switchExercise) {
 }
 
@@ -8,7 +8,7 @@ void PUSHUP::detect() {
     switch (s)
     {
     case up:
-      if (*ag > 70) {
+      if (*ag > 160) {
         state_count++;
         s = down;
         *pd = 0U<<13; // green
@@ -16,7 +16,7 @@ void PUSHUP::detect() {
       }
       break;
     case down:
-      if (*ag < 19) {
+      if (*ag < 147) {
         state_count++;
         s = up;
         *pd = 1U<<13; // green
@@ -29,7 +29,7 @@ void PUSHUP::detect() {
       total_count++;
       state_count = 0;
     }
-    log->printf("angle: %f total_count: %d \n", *ag, total_count);
+    log->printf("total_count: %d, angle: %f  \n", total_count, *ag);
 }
 
 

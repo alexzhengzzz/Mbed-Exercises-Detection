@@ -8,17 +8,17 @@ void JUMPINGJACK::detect() {
     switch (s)
     {
     case standing:
-      if (*z > 5800) {
+      if (*ag > 105) {
         state_count++;
         s = jumping;
         *pd = 1U<<14; // green
       }
       break;
     case jumping:
-      if (*z < 4000) {
+      if (*ag < 95) {
         state_count++;
         s = standing;
-        *pd = 1U<<14; // green
+        *pd = 0U<<14; // green
       }
     default:
       break;
@@ -27,7 +27,7 @@ void JUMPINGJACK::detect() {
       total_count++;
       state_count = 0;
     }
-    log->printf("total_count: %d z: %d \n", total_count, *z);
+    log->printf("total_count: %d ag: %f \n", total_count, *ag);
 }
 
 

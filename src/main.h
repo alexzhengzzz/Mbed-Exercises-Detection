@@ -13,9 +13,8 @@
 
 #define LED_LIGHT_MASK 0x0000F000
 #define LED_SHUTDOWN_MASK 0x00000000
-#define MAX_COUNT 5
+#define MAX_COUNT 15
 #define MAX_DEGREE 5
-
 
 /**** define 4 kinds of exercises state ****/
 typedef enum {
@@ -28,12 +27,9 @@ typedef enum {
 /**** Variables ****/
 int16_t X, Y, Z; 
 float angle, pitch, filter_angle;
-volatile bool resetFlag = false;
 volatile int switchExercise = 0;
-int sitUpNum = 0;
-int pushUpNum = 0; 
-int jumpNum = 0; 
-int squatNum = 0;
+float filter_z = 0;
+
 
 /**** init objects ****/
 LEDBLINK ledControl;
@@ -51,14 +47,16 @@ JUMPINGJACK jj(&X, &Y, &Z, &angle, &switchExercise);
 PUSHUP pp(&X, &Y, &Z, &angle, &switchExercise);
 
 
-
 /**** button Interrupt routine - is interrupt activated by a falling edge of button input ****/
 void changeExercise (void) {
-    if (debounce.read_ms() > 20 && debounce.read_ms() <= 2500) {
+    uint16_t count_t = debounce.read_ms();
+    if (count_t > 20) {
       switchExercise = (switchExercise + 1) % 4;
-    } else if (debounce.read_ms() > 2500) {
-      ledControl.showAllRoutineResult(15, 15, 15, 15);
-    }
+    } 
+    // TODO: show the total result when long press
+    // if (count_t > 5000 && count_t < 8000) {
+    //   ledControl.showAllRoutineResult(15, 15, 15, 15);
+    // } 
     debounce.reset(); 
 }
 

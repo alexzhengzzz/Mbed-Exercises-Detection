@@ -16,7 +16,7 @@ void SITUP::detect() {
       }
       break;
     case sitting:
-      if (*ag < 19) {
+      if (*ag < 28) {
         state_count++;
         s = lying;
         *pd = 1U<<12; // green

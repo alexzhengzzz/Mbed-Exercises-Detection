@@ -29,8 +29,8 @@ void EXEC::indicate(int port, float time) {
 }
 
 void EXEC::finish() {
-    led->blinkALL(2);
-    led->blinkCircle(2);
+    led->blinkALL(1);
+    led->blinkCircle(5);
 }
 
 void EXEC::reset() {

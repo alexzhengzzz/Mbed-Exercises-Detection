@@ -26,13 +26,13 @@ void LEDBLINK::blinkALL(int count) {
 void LEDBLINK::blinkCircle(int count) {
     while (count >= 0) {
         p = 1U<<12;
-        wait(.5);
+        wait(.2);
         p = 1U<<13;
-        wait(.5);
+        wait(.2);
         p = 1U<<14;
-        wait(.5);
+        wait(.2);
         p = 1U<<15;
-        wait(.5);
+        wait(.2);
         count--;
     }
     p = LED_SHUTDOWN_MASK; // reset
